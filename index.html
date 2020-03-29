@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<HTML>
+    <head>
+        <title> pulkst </title>
+        <style>
+            .button {
+                 background-color: purple;
+                 border: none;
+                 color: white;
+                 padding: 15px 25px;
+                 text-align: center;
+                 font-size: 16px;
+                 cursor: pointer;
+            }
+            .button:hover { background-color: black; }
+        </style>
+    </head>
+
+    <body>
+        <button id="button" class="button" onclick="ini();" >Palaist pulksteni!</button> <br><br>
+        <canvas id=myCanvas width=600 height=600 style="background-color: gray;"> </canvas>
+
+        <script>
+        var ctx = myCanvas.getContext("2d"); 
+        
+        var sec;
+        var min;
+        var hou;
+        var h = [];
+        var m = [];
+        var s = [];
+        function ini(){
+            var currentdate = new Date();
+            sec = currentdate.getSeconds();
+            min = currentdate.getMinutes();
+            hou = currentdate.getHours();
+            setInterval(initialize, 1000);
+        }
+        
+        function initialize(){
+            ctx.clearRect(0, 0, myCanvas.width, myCanvas.height)
+            ctx.strokeStyle="black";
+            for(let i=1; i<=12; i++){
+                ctx.fillText(i, 300+210*Math.sin(i*Math.PI/6), 300-210*Math.cos(i*Math.PI/6));
+            }
+            h = [300, 300, 300+100*Math.sin((hou%12)*Math.PI/6+min*Math.PI/360+sec*Math.PI/21600), 300-100*Math.cos((hou%12)*Math.PI/6+min*Math.PI/360+sec*Math.PI/21600)];
+            m = [300, 300, 300+200*Math.sin(min*Math.PI/30+sec*Math.PI/1800), 300-200*Math.cos(min*Math.PI/30+sec*Math.PI/1800)];
+            s = [300, 300, 300+200*Math.sin(sec*Math.PI/30), 300-200*Math.cos(sec*Math.PI/30)];
+            ctx.strokeStyle="black";
+            draw(h);
+            ctx.strokeStyle="black";
+            draw(m);
+            ctx.strokeStyle="red";
+            draw(s);
+            sec = (sec+1)%60;
+            if(sec==0){
+                min = (min+1)%60;
+                if(min==0){
+                    hou = (hou+1)%60;
+                }
+            }
+
+        }
+        
+        function rot(ar, ang){
+            let out = [];
+            out[0] = ar[0];
+            out[1] = ar[1];
+            out[2] = ar[2]*Math.cos(ang)-ar[3]*Math.sin(ang);
+            out[3] = ar[2]*Math.cos(ang)+ar[3]*Math.sin(ang);
+            return out;
+        }
+        
+        function draw(ar){
+            ctx.beginPath();
+            ctx.moveTo(ar[0], ar[1]);
+            ctx.lineTo(ar[2], ar[3]);
+            ctx.stroke();
+        }
+
+        </script>
+
+    </body>
+</html> 
